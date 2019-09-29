@@ -1,11 +1,12 @@
 import datetime
 import json
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 import requests
 from django.shortcuts import render
 
 # Create your views here.
+from django.template import loader
 from pyecharts.charts import Line
 
 url = "http://server.anymre.top:8927/data"
@@ -46,11 +47,11 @@ def perform():
     l.add_xaxis(x)
     l.add_yaxis("v", y)
     l.width = 768
-    l.render()
+    return l.render_embed()
+
 
 from django.http import HttpResponse
 
 
 def index(request):
-    perform()
-    return
+    return HttpResponse(perform())
