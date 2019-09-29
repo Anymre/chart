@@ -19,5 +19,5 @@ from django.urls import path
 from sth import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('<int:mouth>/<int:day>/<int:hour>', views.index, name='index'),
 ]

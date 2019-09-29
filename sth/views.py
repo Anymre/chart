@@ -53,5 +53,5 @@ def perform():
 from django.http import HttpResponse
 
 
-def index(request):
+def index(request,mouth,day,hour):
     return HttpResponse(perform())
