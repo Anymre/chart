@@ -20,15 +20,24 @@ def format(r):
     return datetime.strptime(r, "%Y-%m-%dT%H:%M:%SZ") + timedelta(hours=8)
 
 
-def clean(r):
-    return r.hour == 20 and r.minute == 0
+def clean(r, mouth, day, hour, minute):
+    flag = True
+    if mouth != 99:
+        flag = r.month == mouth
+    if day != 99:
+        flag = r.day == day
+    if hour != 99:
+        flag = r.hour == hour
+    if minute != 99:
+        flag = r.minute == minute
+    return flag
 
 
 def time_str(r):
     return r.strftime("%m/%d")
 
 
-def perform():
+def perform(mouth, day, hour, minute):
     res = requests.get(url).content
     r = json.loads(res)
 
@@ -38,7 +47,7 @@ def perform():
         i["Date"] = format(i["Date"])
         i["Now"] = format(i["Now"])
 
-    f = [i for i in f if clean(i["Date"])]
+    f = [i for i in f if clean(i["Date"], mouth, day, hour, minute)]
 
     x = [time_str(i["Date"]) for i in f]
     y = [i["Price"] for i in f]
@@ -53,5 +62,5 @@ def perform():
 from django.http import HttpResponse
 
 
-def index(request,mouth,day,hour):
-    return HttpResponse(perform())
+def index(request, mouth, day, hour, minute):
+    return HttpResponse(perform(mouth, day, hour, minute))
