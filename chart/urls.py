@@ -20,4 +20,5 @@ from sth import views
 
 urlpatterns = [
     path('<int:mouth>/<int:day>/<int:hour>/<int:minute>', views.index, name='index'),
+    path('admin/', admin.site.urls),
 ]

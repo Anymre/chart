@@ -1,41 +1,24 @@
 import datetime
 import json
-import random
 from datetime import datetime, timedelta
 
-import math
 import requests
-from django.shortcuts import render
 from django.http import HttpResponse
 from pyecharts import options as opts
-
 # Create your views here.
-from django.template import loader
-from pyecharts.charts import Line, EffectScatter, Line3D, Scatter3D
-from pyecharts.faker import Faker
+from pyecharts.charts import Line, Scatter3D
 from pyecharts.globals import ThemeType
 
-url = "http://server.anymre.top:8927/data"
+from sth.models import Forward
 
 
 def index(request, mouth, day, hour, minute):
     return HttpResponse(perform(mouth, day, hour, minute))
 
 
-def get_Date(r):
-    return r["Date"]
-
-
-def get_Now(r):
-    return r["Now"]
-
-
-def format(r):
-    return datetime.strptime(r, "%Y-%m-%dT%H:%M:%SZ") + timedelta(hours=8)
-
-
 def clean(r, mouth, day, hour, minute):
     flag0, flag1, flag2, flag3 = True, True, True, True
+    r = r.date
     if mouth != 99:
         flag0 = r.month == mouth
     if day != 99:
@@ -62,9 +45,6 @@ def time_h_m(r):
 def time_h_m_int(r):
     return r.hour * 100 + r.minute
 
-def sort_by_hour(r):
-    return time_h_m_int(get_Date(r))
-
 
 def chart(f):
     x = [time_str(i["Now"]) for i in f]
@@ -82,17 +62,19 @@ def chart(f):
     return l.render_embed()
 
 
+
+
 def scatter3d_base(f) -> Scatter3D:
-    f.sort(key=sort_by_hour)
     data = [
-        [time_m_d(i["Now"]),time_h_m(i["Now"]), i["Price"]]
+        [time_m_d(i.now), time_h_m(i.now), i.price]
         for i in f
     ]
+    name = ["d", "h", "v"]
     c = (
         Scatter3D(init_opts=opts.InitOpts(theme=ThemeType.LIGHT, width="1366px"))
-            .add("", data)
+            .add("", data, )
             .set_global_opts(
-            visualmap_opts=opts.VisualMapOpts(min_=300,max_=1200),
+            visualmap_opts=opts.VisualMapOpts(min_=300, max_=1200),
             title_opts=opts.TitleOpts(title="MC"),
             toolbox_opts=opts.ToolboxOpts(feature=opts.ToolBoxFeatureOpts()),
         )
@@ -101,18 +83,7 @@ def scatter3d_base(f) -> Scatter3D:
 
 
 def perform(mouth, day, hour, minute):
-    res = requests.get(url).content
-    r = json.loads(res)
+    forwards = Forward.objects.all().order_by("-date", "-now")
+    forwards = [i for i in forwards if clean(i, mouth, day, hour, minute)]
 
-    f = r["Forward"]
-    f.sort(key=get_Date)
-    f.sort(key=get_Now)
-
-    for i in f:
-        i["Date"] = format(i["Date"])
-        i["Now"] = format(i["Now"])
-
-    f = [i for i in f if clean(i["Date"], mouth, day, hour, minute)]
-
-    # return chart(f)
-    return scatter3d_base(f)
+    return scatter3d_base(forwards)
