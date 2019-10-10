@@ -25,7 +25,7 @@ SECRET_KEY = 'y0x=bb^$g%%3=%j#wroe2bd8x=vp3t9+kg26!jrmz6dq1j@pz4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*","server.anymre.top"]
+ALLOWED_HOSTS = ["*",]
 
 # Application definition
 
