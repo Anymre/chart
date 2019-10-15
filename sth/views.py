@@ -12,8 +12,8 @@ from pyecharts.globals import ThemeType
 from sth.models import Forward
 
 
-def index(request, mouth, day, hour, minute):
-    return HttpResponse(perform(mouth, day, hour, minute))
+def index(request, mouth, day):
+    return HttpResponse(perform(mouth, day))
 
 
 def clean(r, mouth, day, hour, minute):
@@ -62,8 +62,6 @@ def chart(f):
     return l.render_embed()
 
 
-
-
 def scatter3d_base(f) -> Scatter3D:
     data = [
         [time_m_d(i.now), time_h_m(i.now), i.price]
@@ -82,8 +80,8 @@ def scatter3d_base(f) -> Scatter3D:
     return c.render_embed()
 
 
-def perform(mouth, day, hour, minute):
-    forwards = Forward.objects.all().order_by("-date", "-now")
-    forwards = [i for i in forwards if clean(i, mouth, day, hour, minute)]
+def perform(mouth, day):
+    forwards = Forward.objects.filter(date__month=mouth, date__day=day).order_by("now")
+    forwards = [i for i in forwards if clean(i, mouth, day, 99, 0)]
 
     return scatter3d_base(forwards)
