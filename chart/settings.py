@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'chart.wsgi.application'
 # }
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'flight',
         'USER': 'flight',
         'PASSWORD': '123456',
