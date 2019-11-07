@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'flight',
         'USER': 'flight',
         'PASSWORD': '123456',
-        'HOST': 'server.anymre.top',
+        'HOST': 'hx.anymre.top',
         'PORT': '3306',
     }
 }
