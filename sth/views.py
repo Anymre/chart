@@ -81,7 +81,7 @@ def scatter3d_base(f) -> Scatter3D:
 
 
 def perform(mouth, day):
-    forwards = Forward.objects.filter(date__month=mouth, date__day=day).order_by("now")
+    forwards = Forward.objects.filter(date__day=day,date__month=mouth).order_by("now")
     forwards = [i for i in forwards if clean(i, mouth, day, 99, 0)]
 
     return scatter3d_base(forwards)
