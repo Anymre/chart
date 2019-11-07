@@ -1,6 +1,6 @@
 FROM python:3
 
-RUN apt-get update && apt-get install git && pip install django && pip install requests && pip install pyecharts && pip install mysql-connector-python && pip install  mysqlclient
+RUN pip install django && pip install requests && pip install pyecharts && pip install mysql-connector-python && pip install  mysqlclient
 
 WORKDIR /src
 
