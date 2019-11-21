@@ -9,11 +9,11 @@ from pyecharts import options as opts
 from pyecharts.charts import Line, Scatter3D
 from pyecharts.globals import ThemeType
 
-from sth.models import Forward
+from sth.models import Forward,Back
 
 
-def index(request, mouth, day):
-    return HttpResponse(perform(mouth, day))
+def index(request, mouth, day, type):
+    return HttpResponse(perform(mouth, day, type))
 
 
 def clean(r, mouth, day, hour, minute):
@@ -80,8 +80,13 @@ def scatter3d_base(f) -> Scatter3D:
     return c.render_embed()
 
 
-def perform(mouth, day):
-    forwards = Forward.objects.filter(date__day=day,date__month=mouth).order_by("now")
-    forwards = [i for i in forwards if clean(i, mouth, day, 99, 0)]
+def perform(mouth, day, type):
+    result=[]
+    if (type == 0):
+        forwards = Forward.objects.filter(date__day=day, date__month=mouth).order_by("now")
+        result = [i for i in forwards if clean(i, mouth, day, 99, 0)]
+    if (type == 1):
+        back = Back.objects.filter(date__day=day, date__month=mouth).order_by("now")
+        result = [i for i in back if clean(i, mouth, day, 99, 0)]
 
-    return scatter3d_base(forwards)
+    return scatter3d_base(result)
