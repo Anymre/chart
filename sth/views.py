@@ -16,18 +16,8 @@ def index(request, year,mouth, day, type):
     return HttpResponse(perform(year,mouth, day, type))
 
 
-def clean(r, mouth, day, hour, minute):
-    flag0, flag1, flag2, flag3 = True, True, True, True
-    r = r.date
-    if mouth != 99:
-        flag0 = r.month == mouth
-    if day != 99:
-        flag1 = r.day == day
-    if hour != 99:
-        flag2 = r.hour == hour
-    if minute != 99:
-        flag3 = r.minute == minute
-    return flag0 and flag1 and flag2 and flag3
+def clean(r,minute):
+    return r.minute == minute
 
 
 def time_str(r):
@@ -84,9 +74,9 @@ def perform(year,mouth, day, type):
     result=[]
     if (type == 0):
         forwards = Forward.objects.filter(date__year=year,date__day=day, date__month=mouth).order_by("now")
-        result = [i for i in forwards if clean(i, mouth, day, 99, 0)]
+        result = [i for i in forwards if clean(i,0)]
     if (type == 1):
         back = Back.objects.filter(date__year=year,date__day=day, date__month=mouth).order_by("now")
-        result = [i for i in back if clean(i, mouth, day, 99, 0)]
+        result = [i for i in back if clean(i,0)]
 
     return scatter3d_base(result)
