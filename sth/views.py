@@ -17,7 +17,7 @@ def index(request, year,mouth, day, type):
 
 
 def clean(r,minute):
-    return r.minute == minute
+    return r.date.minute == minute
 
 
 def time_str(r):
